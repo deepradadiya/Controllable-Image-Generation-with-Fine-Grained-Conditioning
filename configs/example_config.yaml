@@ -1,0 +1,42 @@
+# Example ControlNet Training Configuration
+# This file demonstrates how to customize the training pipeline configuration
+
+# Experiment settings
+experiment_name: "controlnet_depth_experiment"
+seed: 42
+
+# Dataset configuration
+dataset:
+  subset_size: 5000  # Smaller for faster experimentation
+  batch_size: 1      # T4 GPU constraint
+  condition_types: ["depth"]  # Focus on depth conditioning
+  image_size: 512
+  validation_split: 0.1
+
+# Model configuration  
+model:
+  conditioning_channels: 1  # Grayscale depth maps
+  mixed_precision: "fp16"   # Memory optimization
+  enable_gradient_checkpointing: true
+  enable_xformers: true
+
+# Training configuration
+training:
+  num_train_epochs: 50      # Reduced for experimentation
+  learning_rate: 1e-5       # Conservative learning rate
+  gradient_accumulation_steps: 8
+  save_steps: 2500
+  logging_steps: 50
+  eval_steps: 500
+
+# Colab optimizations
+colab:
+  use_drive_storage: true
+  checkpoint_interval_minutes: 20
+  gpu_memory_threshold: 0.85
+
+# Logging
+logging:
+  use_wandb: true
+  wandb_project: "controlnet-depth-training"
+  log_level: "INFO"
