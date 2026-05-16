@@ -8,12 +8,10 @@ This module contains the core ControlNet architecture implementation:
 - HuggingFace compatible model saving/loading
 """
 
-from .controlnet import ControlNet
-from .unet_wrapper import ControlNetUNet
-from .config import ControlNetConfig
+from .controlnet import ControlNetModel
+from .controlnet import create_controlnet_from_config
 
 __all__ = [
-    "ControlNet",
-    "ControlNetUNet", 
-    "ControlNetConfig"
+    "ControlNetModel",
+    "create_controlnet_from_config"
 ]

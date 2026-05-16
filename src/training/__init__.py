@@ -9,15 +9,10 @@ This module contains the training infrastructure for ControlNet models:
 """
 
 from .trainer import ControlNetTrainer
-from .losses import DiffusionLoss
-from .train_depth import train_depth_controlnet
-from .train_pose import train_pose_controlnet
-from .train_edge import train_edge_controlnet
+from .losses import DiffusionLoss, ControlNetLoss
 
 __all__ = [
     "ControlNetTrainer",
     "DiffusionLoss",
-    "train_depth_controlnet",
-    "train_pose_controlnet", 
-    "train_edge_controlnet"
+    "ControlNetLoss",
 ]

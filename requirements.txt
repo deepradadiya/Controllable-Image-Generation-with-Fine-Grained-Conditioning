@@ -34,6 +34,7 @@ wandb==0.15.12  # Experiment tracking
 scipy==1.11.4  # For FID computation
 scikit-image==0.21.0  # Image processing utilities
 lpips==0.1.4  # Perceptual loss metrics
+matplotlib==3.8.2  # Training visualization and loss curves
 
 # Web Demo and Deployment
 gradio==3.50.2

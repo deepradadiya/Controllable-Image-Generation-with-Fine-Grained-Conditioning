@@ -118,31 +118,44 @@ class TestMediaPipePoseExtractor(unittest.TestCase):
         self.test_image = Image.new('RGB', (512, 512), color='white')
         self.test_array = np.ones((512, 512, 3), dtype=np.uint8) * 255
     
-    @patch('mediapipe.solutions.pose.Pose')
-    def test_mediapipe_initialization(self, mock_pose_class):
+    @patch('data.extract_pose.MEDIAPIPE_AVAILABLE', True)
+    @patch('data.extract_pose.NUMPY_AVAILABLE', True)
+    @patch('data.extract_pose.mp', create=True)
+    def test_mediapipe_initialization(self, mock_mp):
         """Test MediaPipe extractor initialization"""
+        mock_pose_class = Mock()
         mock_pose_instance = Mock()
-        mock_pose_class.return_value = mock_pose_instance
+        mock_pose_class.Pose.return_value = mock_pose_instance
+        mock_mp.solutions.pose = mock_pose_class
         
         extractor = MediaPipePoseExtractor()
         
         self.assertIsNotNone(extractor.pose)
-        mock_pose_class.assert_called_once()
+        mock_pose_class.Pose.assert_called_once()
     
-    @patch('mediapipe.solutions.pose.Pose')
-    def test_extract_pose_no_detection(self, mock_pose_class):
+    @patch('data.extract_pose.MEDIAPIPE_AVAILABLE', True)
+    @patch('data.extract_pose.NUMPY_AVAILABLE', True)
+    @patch('data.extract_pose.mp', create=True)
+    @patch('data.extract_pose.cv2')
+    def test_extract_pose_no_detection(self, mock_cv2, mock_mp):
         """Test pose extraction when no pose is detected"""
+        mock_pose_class = Mock()
         mock_pose_instance = Mock()
-        mock_pose_instance.process.return_value.pose_landmarks = None
-        mock_pose_class.return_value = mock_pose_instance
+        mock_pose_instance.process.return_value = Mock(pose_landmarks=None)
+        mock_pose_class.Pose.return_value = mock_pose_instance
+        mock_mp.solutions.pose = mock_pose_class
+        mock_cv2.cvtColor.return_value = np.ones((512, 512, 3), dtype=np.uint8)
         
         extractor = MediaPipePoseExtractor()
         poses = extractor.extract_pose(self.test_image)
         
         self.assertEqual(len(poses), 0)
     
-    @patch('mediapipe.solutions.pose.Pose')
-    def test_extract_pose_with_detection(self, mock_pose_class):
+    @patch('data.extract_pose.MEDIAPIPE_AVAILABLE', True)
+    @patch('data.extract_pose.NUMPY_AVAILABLE', True)
+    @patch('data.extract_pose.mp', create=True)
+    @patch('data.extract_pose.cv2')
+    def test_extract_pose_with_detection(self, mock_cv2, mock_mp):
         """Test pose extraction with successful detection"""
         # Mock MediaPipe results
         mock_landmark = Mock()
@@ -154,9 +167,12 @@ class TestMediaPipePoseExtractor(unittest.TestCase):
         mock_results.pose_landmarks = Mock()
         mock_results.pose_landmarks.landmark = [mock_landmark] * 33  # MediaPipe has 33 landmarks
         
+        mock_pose_class = Mock()
         mock_pose_instance = Mock()
         mock_pose_instance.process.return_value = mock_results
-        mock_pose_class.return_value = mock_pose_instance
+        mock_pose_class.Pose.return_value = mock_pose_instance
+        mock_mp.solutions.pose = mock_pose_class
+        mock_cv2.cvtColor.return_value = np.ones((512, 512, 3), dtype=np.uint8)
         
         extractor = MediaPipePoseExtractor()
         poses = extractor.extract_pose(self.test_image)
@@ -165,8 +181,16 @@ class TestMediaPipePoseExtractor(unittest.TestCase):
         self.assertEqual(len(poses[0].keypoints), 33)
         self.assertEqual(poses[0].format, PoseFormat.MEDIAPIPE_33)
     
-    def test_validate_output(self):
+    @patch('data.extract_pose.MEDIAPIPE_AVAILABLE', True)
+    @patch('data.extract_pose.NUMPY_AVAILABLE', True)
+    @patch('data.extract_pose.mp', create=True)
+    def test_validate_output(self, mock_mp):
         """Test output validation"""
+        mock_pose_class = Mock()
+        mock_pose_instance = Mock()
+        mock_pose_class.Pose.return_value = mock_pose_instance
+        mock_mp.solutions.pose = mock_pose_class
+        
         extractor = MediaPipePoseExtractor()
         
         # Valid output
@@ -186,9 +210,12 @@ class TestPoseExtractor(unittest.TestCase):
         """Set up test environment"""
         self.test_image = Image.new('RGB', (512, 512), color='white')
     
-    @patch('data.extract_pose.MediaPipePoseExtractor')
+    @patch('data.extract_pose.MEDIAPIPE_AVAILABLE', True)
+    @patch('data.extract_pose.NUMPY_AVAILABLE', True)
+    @patch('data.extract_pose.TORCH_AVAILABLE', True)
     @patch('data.extract_pose.DWPoseExtractor')
-    def test_initialization_with_dwpose(self, mock_dwpose, mock_mediapipe):
+    @patch('data.extract_pose.MediaPipePoseExtractor')
+    def test_initialization_with_dwpose(self, mock_mediapipe, mock_dwpose):
         """Test initialization with DWPose preference"""
         mock_dwpose.return_value = Mock()
         mock_mediapipe.return_value = Mock()
@@ -198,6 +225,8 @@ class TestPoseExtractor(unittest.TestCase):
         mock_dwpose.assert_called_once()
         mock_mediapipe.assert_called_once()
     
+    @patch('data.extract_pose.MEDIAPIPE_AVAILABLE', True)
+    @patch('data.extract_pose.NUMPY_AVAILABLE', True)
     @patch('data.extract_pose.MediaPipePoseExtractor')
     def test_initialization_speed_critical(self, mock_mediapipe):
         """Test initialization in speed-critical mode"""
@@ -208,6 +237,8 @@ class TestPoseExtractor(unittest.TestCase):
         mock_mediapipe.assert_called_once()
         self.assertIsNone(extractor.dwpose_extractor)
     
+    @patch('data.extract_pose.MEDIAPIPE_AVAILABLE', True)
+    @patch('data.extract_pose.NUMPY_AVAILABLE', True)
     @patch('data.extract_pose.MediaPipePoseExtractor')
     def test_extract_with_mediapipe_fallback(self, mock_mediapipe):
         """Test extraction with MediaPipe fallback"""

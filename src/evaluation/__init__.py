@@ -9,11 +9,35 @@ This module contains evaluation metrics and monitoring components:
 """
 
 from .compute_fid import FIDCalculator
-from .condition_alignment import ConditionAlignmentMetrics
-from .visual_grid import VisualGridGenerator
+from .condition_alignment import (
+    AlignmentResult,
+    BatchAlignmentResult,
+    ConditionAlignmentEvaluator,
+    DepthAlignmentEvaluator,
+    EdgeAlignmentEvaluator,
+    PoseAlignmentEvaluator,
+)
+from .visual_grid import (
+    EvaluationSample,
+    VisualGridGenerator,
+    VisualQualityAssessor,
+    VisualQualityMetrics,
+    generate_evaluation_report,
+    generate_visual_comparison,
+)
 
 __all__ = [
     "FIDCalculator",
-    "ConditionAlignmentMetrics",
-    "VisualGridGenerator"
+    "AlignmentResult",
+    "BatchAlignmentResult",
+    "ConditionAlignmentEvaluator",
+    "DepthAlignmentEvaluator",
+    "PoseAlignmentEvaluator",
+    "EdgeAlignmentEvaluator",
+    "EvaluationSample",
+    "VisualGridGenerator",
+    "VisualQualityAssessor",
+    "VisualQualityMetrics",
+    "generate_visual_comparison",
+    "generate_evaluation_report",
 ]

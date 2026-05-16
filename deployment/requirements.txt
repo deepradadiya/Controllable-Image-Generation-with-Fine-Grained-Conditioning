@@ -1,0 +1,29 @@
+# HuggingFace Space Deployment Requirements
+# Minimal subset of main requirements.txt for inference-only deployment
+
+# Core ML Framework
+torch>=2.0.0
+torchvision>=0.15.0
+
+# Diffusion Models and HuggingFace
+diffusers>=0.21.0
+transformers>=4.35.0
+accelerate>=0.24.0
+safetensors>=0.4.0
+huggingface-hub>=0.17.0
+
+# Image Processing
+Pillow>=10.0.0
+opencv-python-headless>=4.8.0
+numpy>=1.24.0
+
+# Condition Map Extraction
+timm>=0.9.0
+controlnet-aux>=0.4.0
+
+# Web Interface
+gradio>=3.50.0
+
+# Utilities
+tqdm>=4.66.0
+psutil>=5.9.0

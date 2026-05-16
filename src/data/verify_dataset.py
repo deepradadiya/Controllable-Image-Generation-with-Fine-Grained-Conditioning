@@ -38,6 +38,10 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# Configure logging first
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Import existing data processing components
 from .dataset_processor import ProcessingSample, DatasetReport
 try:
@@ -49,10 +53,6 @@ except ImportError:
     # Graceful fallback if extractors are not available
     EXTRACTORS_AVAILABLE = False
     logger.warning("Condition extractors not available. Some functionality will be limited.")
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 
 @dataclass

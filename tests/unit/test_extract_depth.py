@@ -193,13 +193,15 @@ class TestDepthExtractor:
             
             # Mock processor
             mock_processor = Mock()
-            mock_processor.from_pretrained.return_value = mock_processor
             mock_processor_class.from_pretrained.return_value = mock_processor
             
-            # Mock model
+            # Mock model - ensure .to() returns the model itself and parameters() is iterable
             mock_model = Mock()
-            mock_model.eval.return_value = None
-            mock_model.parameters.return_value = [Mock(requires_grad=True)]
+            mock_model.eval.return_value = mock_model
+            mock_param = Mock()
+            mock_param.requires_grad = True
+            mock_model.parameters.return_value = iter([mock_param])
+            mock_model.to.return_value = mock_model
             mock_model_class.from_pretrained.return_value = mock_model
             
             # Mock model output
@@ -207,7 +209,7 @@ class TestDepthExtractor:
             mock_output.predicted_depth = torch.randn(1, 384, 384)
             mock_model.return_value = mock_output
             
-            # Mock processor output
+            # Mock processor output (callable returns dict-like object)
             mock_processor.return_value = {
                 "pixel_values": torch.randn(1, 3, 384, 384)
             }
@@ -226,7 +228,10 @@ class TestDepthExtractor:
     
     def test_device_setup_auto_cuda(self, mock_model_components):
         """Test automatic device setup with CUDA available"""
-        with patch('torch.cuda.is_available', return_value=True):
+        with patch('torch.cuda.is_available', return_value=True), \
+             patch('torch.cuda.get_device_name', return_value='Tesla T4'), \
+             patch('torch.cuda.get_device_properties') as mock_props:
+            mock_props.return_value = Mock(total_memory=15 * 1024**3)
             config = DepthExtractionConfig(device="auto")
             extractor = DepthExtractor(config)
             assert extractor.device.type == "cuda"
