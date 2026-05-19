@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Model weights and cache
+cache/
+*.safetensors
+*.bin
+*.ckpt
+*.pt
+*.pth
+
+# Hugging Face cache
+.cache/
+
+# IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Hypothesis
+.hypothesis/
+
+# Pytest
+.pytest_cache/
+
+# Distribution
+dist/
+build/
+*.egg-info/
