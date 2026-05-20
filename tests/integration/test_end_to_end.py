@@ -649,7 +649,7 @@ class TestGradioAppIntegration:
         """Test that _generate_image handles missing source image."""
         from src.app.gradio_app import _generate_image
 
-        cond_display, gen_image, status = _generate_image(
+        input_img, cond_display, gen_image, status = _generate_image(
             source_image=None,
             condition_type="edge",
             prompt="test prompt",
@@ -666,7 +666,7 @@ class TestGradioAppIntegration:
         from src.app.gradio_app import _generate_image
 
         test_image = create_test_image(256, 256)
-        cond_display, gen_image, status = _generate_image(
+        input_img, cond_display, gen_image, status = _generate_image(
             source_image=test_image,
             condition_type="edge",
             prompt="",
